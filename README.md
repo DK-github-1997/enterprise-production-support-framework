@@ -1,24 +1,33 @@
 # Enterprise Production Support Framework
 
-## Overview
-This repository simulates real-time production support activities in an Enterprise Data Warehouse (EDW/ADW) environment.
-
-It demonstrates monitoring, debugging, and troubleshooting techniques used in enterprise reporting platforms.
+Enterprise Production Support framework for Data Warehouse & AWS pipelines including SQL monitoring, incident debugging, PL/SQL retry mechanisms, Glue job auditing, and Linux automation scripts inspired by real-time EDW/ADW environments.
 
 ## Tech Stack
-- Oracle SQL / PL-SQL
-- AWS Glue
-- AWS Step Functions
-- Linux Shell Scripting
-- Data Warehouse Monitoring
 
-## Production Support Features
-✔ Job Failure Monitoring
-✔ Data Validation Checks
-✔ Duplicate Detection
-✔ Performance Debugging
-✔ Glue Job Monitoring
-✔ Incident Resolution Queries
+- [Next.js](https://nextjs.org) - React framework
+- [Shadcn UI](https://ui.shadcn.com/) - Component library
+- [Tailwind CSS](https://tailwindcss.com) - Styling
+- [TypeScript](https://www.typescriptlang.org/) - Type safety
 
-## Real-Time Use Case
-Designed based on enterprise reporting pipelines where production incidents require SQL debugging, ETL monitoring, and system health checks.
+## Getting Started
+
+1. Install dependencies:
+
+```bash
+npm install
+```
+
+2. Start the development server:
+
+```bash
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the application.
+
+## Project Structure
+
+- `src/app/page.tsx` - Main page
+- `src/app/layout.tsx` - Root layout
+- `src/components/ui/` - Shadcn UI components
+- `src/lib/utils.ts` - Utility functions
