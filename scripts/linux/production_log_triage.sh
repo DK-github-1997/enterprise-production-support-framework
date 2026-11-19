@@ -58,13 +58,8 @@ awk -v cutoff="$CUTOFF_TEXT" '
 
   timestamp = substr($0, 1, 19)
   gsub(/T/, " ", timestamp)
-  command = "date -d \"" timestamp "\" +%s 2>/dev/null"
   parsed = (timestamp ~ /^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}$/)
-  if (parsed) {
-    command | getline epoch
-    close(command)
-    if (epoch != "" && epoch < cutoff) next
-  }
+  if (parsed && timestamp < cutoff) next
   print
 }' "$LOG_FILE" | tail -n 100
 
