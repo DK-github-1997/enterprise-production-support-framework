@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Production log triage helper - read-only.
-# Usage: ./production_log_triage.sh <log_file> [lookback_minutes]
+# Usage: bash production_log_triage.sh <log_file> [lookback_minutes]
 # Requires: bash, grep, awk, date
 # Does not restart services, modify logs, or expose environment variables.
 
@@ -25,7 +25,7 @@ LOOKBACK_MINUTES=${2:-60}
 # This script expects timestamps at the beginning of each log line in either
 # YYYY-MM-DD HH:MM:SS or YYYY-MM-DDTHH:MM:SS format. Lines without a matching
 # timestamp are still included in severity counts, but not time-filtered.
-CUTOFF_EPOCH=$(date -d "-$LOOKBACK_MINUTES minutes" +%s 2>/dev/null) || {
+CUTOFF_TEXT=$(date -d "-$LOOKBACK_MINUTES minutes" '+%Y-%m-%d %H:%M:%S' 2>/dev/null) || {
   echo "ERROR: GNU-compatible date is required for lookback filtering." >&2
   exit 2
 }
@@ -38,10 +38,10 @@ echo
 
 # Severity summary across the complete file. Case-insensitive matching.
 awk '
-BEGIN { IGNORECASE=1; error=0; warning=0; fatal=0 }
- /FATAL|CRITICAL/ { fatal++ }
- /ERROR|ORA-[0-9]{5}|EXCEPTION/ { error++ }
- /WARN(ING)?/ { warning++ }
+{ line=tolower($0) }
+ line ~ /fatal|critical/ { fatal++ }
+ line ~ /error|ora-[0-9]{5}|exception/ { error++ }
+ line ~ /warn(ing)?/ { warning++ }
 END {
   printf "Fatal/Critical lines : %d\n", fatal
   printf "Error/Oracle lines   : %d\n", error
@@ -50,10 +50,10 @@ END {
 
 echo
 echo "=== Recent error and warning lines (timestamp-filtered where parseable) ==="
-awk -v cutoff="$CUTOFF_EPOCH" '
-BEGIN { IGNORECASE=1 }
+awk -v cutoff="$CUTOFF_TEXT" '
 {
-  severity = ($0 ~ /FATAL|CRITICAL|ERROR|ORA-[0-9]{5}|EXCEPTION|WARN(ING)?/)
+  line = tolower($0)
+  severity = (line ~ /fatal|critical|error|ora-[0-9]{5}|exception|warn(ing)?/)
   if (!severity) next
 
   timestamp = substr($0, 1, 19)
